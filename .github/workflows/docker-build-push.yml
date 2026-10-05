@@ -35,6 +35,14 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/docker-devops-portfolio-api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/docker-devops-portfolio-api:${{ github.sha }}
 
+
+      - name: Debug AWS configuration
+        run: |
+          echo "AWS Region: ${{ vars.AWS_REGION }}"
+          echo "AWS Role ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}"
+          echo "EC2 Instance ID: ${{ vars.EC2_INSTANCE_ID }}"
+
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
