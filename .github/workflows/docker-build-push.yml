@@ -1,9 +1,13 @@
-name: Build and Push Docker Image
+name: Build, Push and Deploy Docker Image
 
 on:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   docker:
@@ -30,3 +34,34 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/docker-devops-portfolio-api:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/docker-devops-portfolio-api:${{ github.sha }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deploy to EC2 using SSM
+        env:
+          INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Docker DevOps portfolio API" \
+            --parameters 'commands=[
+              "cd /home/ubuntu/docker-devops-portfolio",
+              "git pull origin main",
+              "sudo docker compose pull api",
+              "sudo docker compose up -d --no-build"
+            ]' \
+            --query "Command.CommandId" \
+            --output text)
+
+          echo "SSM Command ID: $COMMAND_ID"
+
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$INSTANCE_ID"
+
+          echo "Deployment completed successfully."
