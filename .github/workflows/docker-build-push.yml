@@ -53,9 +53,8 @@ jobs:
             --parameters "commands=[
               \"cd /home/ubuntu/docker-devops-portfolio\",
               \"git pull origin main\",
-              \"export IMAGE_TAG=$IMAGE_TAG\",
-              \"sudo -E docker compose pull api\",
-              \"sudo -E docker compose up -d --no-build\"
+              \"sudo env IMAGE_TAG=$IMAGE_TAG docker compose pull api\",
+              \"sudo env IMAGE_TAG=$IMAGE_TAG docker compose up -d --no-build\"
             ]" \
             --query "Command.CommandId" \
             --output text)
