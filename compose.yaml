@@ -21,7 +21,7 @@ services:
       retries: 5
 
   api:
-    image: palakpreetcloud/docker-devops-portfolio-api:latest
+    image: palakpreetcloud/docker-devops-portfolio-api:${IMAGE_TAG:-latest}
 
     container_name: docker-devops-api
 
