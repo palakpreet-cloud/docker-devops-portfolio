@@ -44,17 +44,19 @@ jobs:
       - name: Deploy to EC2 using SSM
         env:
           INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker DevOps portfolio API" \
-            --parameters 'commands=[
-              "cd /home/ubuntu/docker-devops-portfolio",
-              "git pull origin main",
-              "sudo docker compose pull api",
-              "sudo docker compose up -d --no-build"
-            ]' \
+            --parameters "commands=[
+              \"cd /home/ubuntu/docker-devops-portfolio\",
+              \"git pull origin main\",
+              \"export IMAGE_TAG=$IMAGE_TAG\",
+              \"sudo -E docker compose pull api\",
+              \"sudo -E docker compose up -d --no-build\"
+            ]" \
             --query "Command.CommandId" \
             --output text)
 
