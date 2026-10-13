@@ -16,8 +16,7 @@ COPY --from=builder /install /usr/local
 COPY app/ ./app/
 
 # Create a dedicated non-root user
-RUN useradd --create-home --shell /bin/bash appuser 
-    && chown -R appuser:appuser /app
+RUN useradd --create-home --shell /bin/bash appuser && chown -R appuser:appuser /app
 
 USER appuser
 
