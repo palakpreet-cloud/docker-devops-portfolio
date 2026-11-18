@@ -2,8 +2,10 @@ name: Build, Push and Deploy Docker Image
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'screenshots/**'
 
 permissions:
   contents: read
