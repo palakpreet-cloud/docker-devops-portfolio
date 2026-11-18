@@ -60,13 +60,14 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/docker-devops-portfolio-api:${{ github.sha }}
 
       - name: Configure AWS credentials
+        if: vars.DEPLOY_ENABLED == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      
       - name: Deploy to EC2 using SSM
+        if: vars.DEPLOY_ENABLED == 'true'
         env:
           INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
           IMAGE_TAG: ${{ github.sha }}
