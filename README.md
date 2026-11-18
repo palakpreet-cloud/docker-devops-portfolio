@@ -4,9 +4,6 @@
 
 A small web API that runs in Docker, stores data in a PostgreSQL database, and **deploys itself to an AWS server every time I push code to GitHub.**
 
-> ✏️ **Before you commit:** search this file for `TODO` and fill in each one. Save all screenshots in a `docs/` folder with the exact names used below.
-
----
 
 ## What this project does
 
